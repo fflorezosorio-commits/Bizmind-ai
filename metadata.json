@@ -1,0 +1,6 @@
+{
+  "name": "BizMind-AI",
+  "description": "Expert business AI consultant for companies, students, and entrepreneurs. Get insights on strategy, logistics, marketing, and more.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
