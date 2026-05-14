@@ -15,7 +15,10 @@ export const Sidebar = ({ onNewChat, chats }: SidebarProps) => {
           <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center text-white font-bold text-xl">
             B
           </div>
-          <span className="font-display font-bold text-lg text-zinc-900 tracking-tight">BizMind</span>
+          <div className="flex flex-col">
+            <span className="font-display font-bold text-lg text-zinc-900 tracking-tight leading-none">BizMind</span>
+            <span className="text-[10px] text-zinc-400 font-medium tracking-wider mt-0.5">@FFlorez</span>
+          </div>
         </div>
 
         <button 
