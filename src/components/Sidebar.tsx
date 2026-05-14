@@ -15,7 +15,7 @@ export const Sidebar = ({ onNewChat, chats }: SidebarProps) => {
           <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center text-white font-bold text-xl">
             B
           </div>
-          <span className="font-display font-bold text-lg text-zinc-900 tracking-tight">BizMind-AI</span>
+          <span className="font-display font-bold text-lg text-zinc-900 tracking-tight">BizMind</span>
         </div>
 
         <button 

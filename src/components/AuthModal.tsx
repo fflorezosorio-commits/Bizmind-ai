@@ -95,7 +95,8 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
       if (errorCode === 'auth/operation-not-allowed') {
         message = "El inicio de sesión con Google NO está activado en tu Firebase Console. Ve a Authentication > Sign-in method y actívalo.";
       } else if (errorCode === 'auth/unauthorized-domain') {
-        message = "Este dominio no está autorizado. Añade tanto el dominio de desarrollo como el de producción en Authentication > Settings > Authorized domains.";
+        const hostname = window.location.hostname;
+        message = `Este dominio (${hostname}) no está autorizado. Por favor, añádelo en Firebase Console > Authentication > Settings > Authorized domains.`;
       } else if (errorCode === 'auth/popup-blocked') {
         message = "El navegador bloqueó la ventana emergente. Por favor, permite ventanas emergentes para este sitio.";
       }
