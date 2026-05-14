@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI, ThinkingLevel } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -70,9 +70,6 @@ app.post("/api/chat", async (req, res) => {
       contents: contents,
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
-        thinkingConfig: {
-          thinkingLevel: ThinkingLevel.MINIMAL
-        }
       }
     });
 

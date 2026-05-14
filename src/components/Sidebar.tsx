@@ -47,12 +47,6 @@ export const Sidebar = ({ onNewChat, chats }: SidebarProps) => {
 
       <div className="mt-auto p-4 border-t border-zinc-100 space-y-1">
         <NavItem icon={<Settings size={16} />} label="Ajustes" />
-        <div className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-zinc-50 transition-colors text-sm text-zinc-700">
-          <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center text-[10px] font-bold text-zinc-500">
-            JD
-          </div>
-          <span className="truncate">Consultor Invitado</span>
-        </div>
         <div className="pt-2 px-3">
           <p className="text-[9px] text-zinc-400 leading-tight">
             © 2026 FFlorez. Todos los derechos reservados.
