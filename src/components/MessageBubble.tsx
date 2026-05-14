@@ -26,7 +26,7 @@ export const MessageBubble = ({ role, content }: MessageBubbleProps) => {
         
         <div className="flex-1 min-w-0">
           <div className="text-sm font-semibold mb-1 flex items-center gap-2">
-            {isUser ? "Tú" : "BizMind-AI"}
+            {isUser ? "Tú" : "BizMind"}
           </div>
           <div className="markdown-body">
             <Markdown>{content}</Markdown>

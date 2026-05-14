@@ -1,4 +1,4 @@
-# Security Specification for BizMind-AI
+# Security Specification for BizMind
 
 ## Data Invariants
 1. **User Identity**: The document ID in the `users` collection must exactly match the `uid` field and the authenticated user's `request.auth.uid`.

@@ -175,7 +175,7 @@ export const ChatArea = ({ onFirstMessage }: ChatAreaProps) => {
             </button>
           </div>
           <p className="text-[10px] text-zinc-400 text-center mt-3">
-            BizMind-AI puede cometer errores. Verifica la información importante.
+            BizMind puede cometer errores. Verifica la información importante.
           </p>
         </div>
       </div>

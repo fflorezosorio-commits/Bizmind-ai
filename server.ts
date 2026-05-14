@@ -21,7 +21,7 @@ const ai = new GoogleGenAI({
   }
 });
 
-const SYSTEM_INSTRUCTION = `You are BizMind-AI, a world-class business consultant and AI assistant.
+const SYSTEM_INSTRUCTION = `You are BizMind, a world-class business consultant and AI assistant.
 Your expertise covers:
 - Strategic planning and entrepreneurship.
 - Logistics and supply chain management.
@@ -46,7 +46,7 @@ app.post("/api/chat", async (req, res) => {
 
   try {
     // We convert the message format to what Google GenAI expects
-    // BizMind-AI uses a stateless approach here for simplicity, 
+    // BizMind uses a stateless approach here for simplicity, 
     // but we send the history to the API.
     
     // Last message is the user prompt
@@ -120,7 +120,7 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`BizMind-AI server running on http://localhost:${PORT}`);
+    console.log(`BizMind server running on http://localhost:${PORT}`);
   });
 }
 

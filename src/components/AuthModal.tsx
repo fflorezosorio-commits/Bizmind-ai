@@ -132,7 +132,7 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                 </button>
               </div>
 
-              <h2 className="text-2xl font-display font-bold text-zinc-900 mb-2">Continuar con BizMind-AI</h2>
+              <h2 className="text-2xl font-display font-bold text-zinc-900 mb-2">Continuar con BizMind</h2>
               <p className="text-zinc-500 mb-8">Has alcanzado el límite de consultas gratuitas. Regístrate para continuar aprovechando todo nuestro potencial.</p>
 
               {error && (
