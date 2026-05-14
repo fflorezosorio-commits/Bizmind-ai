@@ -79,7 +79,21 @@ app.post("/api/chat", async (req, res) => {
     res.end();
   } catch (error: any) {
     console.error("Chat error:", error);
-    res.status(500).json({ error: error.message || "Failed to generate response" });
+    
+    let errorMessage = "Lo siento, ocurrió un error al procesar tu consulta.";
+    
+    // Detect quota exceeded or rate limit errors
+    if (error.message?.includes("429") || error.message?.toLowerCase().includes("quota") || error.message?.toLowerCase().includes("limit")) {
+      errorMessage = "Has excedido el límite de consultas gratuitas de la IA por hoy. Por favor, intenta de nuevo en unos minutos o mañana.";
+    }
+
+    // If headers were already sent, we can't send a JSON response
+    if (res.headersSent) {
+      res.write(`\n\n[ERROR: ${errorMessage}]`);
+      return res.end();
+    }
+    
+    res.status(500).json({ error: errorMessage });
   }
 });
 

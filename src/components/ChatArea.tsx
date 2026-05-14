@@ -94,8 +94,14 @@ export const ChatArea = ({ onFirstMessage }: ChatAreaProps) => {
       }
     } catch (error: any) {
       console.error(error);
-      const errorMessage = error.message || 'Lo siento, ocurrió un error al procesar tu consulta.';
-      setMessages(prev => [...prev, { role: 'assistant', content: `${errorMessage} Por favor intenta de nuevo.` }]);
+      const errorMessage = error.message && !error.message.includes('Error de red') 
+        ? error.message 
+        : 'Lo siento, ocurrió un error al procesar tu consulta.';
+      
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: errorMessage.endsWith('.') ? `${errorMessage} Por favor intenta de nuevo.` : `${errorMessage}. Por favor intenta de nuevo.` 
+      }]);
     } finally {
       setIsLoading(false);
     }
