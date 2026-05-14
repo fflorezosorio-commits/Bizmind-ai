@@ -100,10 +100,22 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), 'dist');
+    // In production, serve from the 'dist' directory relative to the current working directory
+    const distPath = path.resolve(process.cwd(), "dist");
+    const indexPath = path.join(distPath, "index.html");
+    
+    console.log(`[Production] Serving static files from: ${distPath}`);
+    console.log(`[Production] Expected index.html at: ${indexPath}`);
+    
     app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+    app.get("*", (req, res) => {
+      res.type("html");
+      res.sendFile(indexPath, (err) => {
+        if (err) {
+          console.error(`[Production] Error sending index.html: ${err.message}`);
+          res.status(500).send("Error loading application. Please ensure the build completed successfully.");
+        }
+      });
     });
   }
 
