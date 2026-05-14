@@ -65,7 +65,7 @@ async function startServer() {
         parts: [{ text: m.content }]
       }));
 
-      console.log(`[API] calling Gemini: ${contents.length} messages`);
+      console.log(`[API] calling Gemini (gemini-1.5-flash): ${contents.length} messages`);
 
       const result = await ai.models.generateContentStream({
         model: "gemini-1.5-flash",
@@ -87,14 +87,19 @@ async function startServer() {
 
       res.end();
     } catch (error: any) {
-      console.error("Chat error:", error);
+      console.error("Chat error detail:", error);
       
       let errorMessage = "Lo siento, ocurrió un error al procesar tu consulta.";
       
       // Detect quota exceeded or rate limit errors
       const errStr = String(error.message || "").toLowerCase();
-      if (errStr.includes("429") || errStr.includes("quota") || errStr.includes("limit") || errStr.includes("exhausted")) {
+      const status = error.status || (error.response && error.response.status);
+      
+      if (status === 429 || errStr.includes("429") || errStr.includes("quota") || errStr.includes("limit") || errStr.includes("exhausted")) {
         errorMessage = "Has excedido el límite de consultas gratuitas de la IA por hoy. Por favor, intenta de nuevo en unos minutos o mañana.";
+        res.status(429);
+      } else {
+        res.status(500);
       }
 
       // If headers were already sent, we can't send a JSON response
@@ -103,7 +108,7 @@ async function startServer() {
         return res.end();
       }
       
-      res.status(500).json({ error: errorMessage });
+      res.json({ error: errorMessage });
     }
   });
 

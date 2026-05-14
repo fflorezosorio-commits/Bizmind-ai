@@ -113,8 +113,13 @@ export const ChatArea = ({ onFirstMessage }: ChatAreaProps) => {
       console.error(error);
       let errorMessage = error.message;
       
-      if (!errorMessage || errorMessage.includes('Error de red') || errorMessage.includes('Unexpected token')) {
+      // If it's a generic network error message, translate it or keep it simple
+      if (!errorMessage) {
         errorMessage = 'Lo siento, ocurrió un error al procesar tu consulta.';
+      } else if (errorMessage.includes('Failed to fetch') || errorMessage.includes('Error de red')) {
+        errorMessage = 'Error de conexión. Por favor revisa tu internet.';
+      } else if (errorMessage.includes('Unexpected token')) {
+        errorMessage = 'Error en la respuesta del servidor.';
       }
       
       const fullMessage = (errorMessage.includes('intenta de nuevo') || errorMessage.includes('try again'))
