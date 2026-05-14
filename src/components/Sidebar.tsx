@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, MessageSquare, Briefcase, GraduationCap, TrendingUp, Settings } from 'lucide-react';
+import { Plus, MessageSquare, Briefcase, GraduationCap, TrendingUp, Settings, Mail } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 
 interface SidebarProps {
@@ -47,6 +47,13 @@ export const Sidebar = ({ onNewChat, chats }: SidebarProps) => {
 
       <div className="mt-auto p-4 border-t border-zinc-100 space-y-1">
         <NavItem icon={<Settings size={16} />} label="Ajustes" />
+        <a 
+          href="mailto:fflorezosorio@gmail.com" 
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm font-medium hover:bg-zinc-50 text-zinc-500"
+        >
+          <Mail size={16} />
+          <span className="truncate">Contacto</span>
+        </a>
         <div className="pt-2 px-3">
           <p className="text-[9px] text-zinc-400 leading-tight">
             © 2026 FFlorez. Todos los derechos reservados.
