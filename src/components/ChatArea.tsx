@@ -67,6 +67,12 @@ export const ChatArea = ({ onFirstMessage }: ChatAreaProps) => {
         body: JSON.stringify({ messages: [...messages, userMsg] }),
       });
 
+      // Special check for HTML responses which usually indicate a routing fallback/error
+      const contentType = response.headers.get('Content-Type') || '';
+      if (contentType.includes('text/html')) {
+        throw new Error('El servidor devolvió una página de error inesperada. Por favor, intenta de nuevo.');
+      }
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `Error ${response.status}: Error de red`);
@@ -84,7 +90,18 @@ export const ChatArea = ({ onFirstMessage }: ChatAreaProps) => {
         if (done) break;
         
         const chunk = decoder.decode(value, { stream: true });
-        assistantContent += chunk;
+        
+        // Check if the chunk contains an error pattern injected by the server
+        if (chunk.includes('[ERROR:')) {
+          const match = chunk.match(/\[ERROR: (.*?)\]/);
+          if (match) {
+            assistantContent += `\n\n**Error:** ${match[1]}`;
+          } else {
+            assistantContent += chunk;
+          }
+        } else {
+          assistantContent += chunk;
+        }
         
         setMessages(prev => {
           const newMessages = [...prev];
@@ -94,9 +111,11 @@ export const ChatArea = ({ onFirstMessage }: ChatAreaProps) => {
       }
     } catch (error: any) {
       console.error(error);
-      const errorMessage = error.message && !error.message.includes('Error de red') 
-        ? error.message 
-        : 'Lo siento, ocurrió un error al procesar tu consulta.';
+      let errorMessage = error.message;
+      
+      if (!errorMessage || errorMessage.includes('Error de red') || errorMessage.includes('Unexpected token')) {
+        errorMessage = 'Lo siento, ocurrió un error al procesar tu consulta.';
+      }
       
       const fullMessage = (errorMessage.includes('intenta de nuevo') || errorMessage.includes('try again'))
         ? errorMessage
