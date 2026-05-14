@@ -1,5 +1,5 @@
 {
-  "name": "BizMind-AI",
+  "name": "BizMind",
   "description": "Expert business AI consultant for companies and professionals. Includes multi-provider authentication and engagement-based registration.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
