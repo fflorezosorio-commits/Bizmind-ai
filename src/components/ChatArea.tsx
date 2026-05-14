@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, Building2, BookOpen, Lightbulb, TrendingUp, Bot } from 'lucide-react';
+import { Send, Sparkles, Building2, BookOpen, Lightbulb, TrendingUp, Bot, LogIn } from 'lucide-react';
 import { MessageBubble } from './MessageBubble';
 import { cn } from '@/src/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
+import { AuthModal } from './AuthModal';
+import { auth } from '../lib/firebase';
+import { onAuthStateChanged, User } from 'firebase/auth';
 
 export interface Message {
   role: 'user' | 'assistant';
@@ -17,7 +20,17 @@ export const ChatArea = ({ onFirstMessage }: ChatAreaProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!auth) return;
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -27,6 +40,13 @@ export const ChatArea = ({ onFirstMessage }: ChatAreaProps) => {
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
+
+    // Trigger auth requirement after 3 user messages if not logged in
+    const userMessageCount = messages.filter(m => m.role === 'user').length;
+    if (userMessageCount >= 3 && !user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
 
     const userMsg: Message = { role: 'user', content: input };
     
@@ -138,26 +158,42 @@ export const ChatArea = ({ onFirstMessage }: ChatAreaProps) => {
               placeholder="Haz una consulta sobre negocios..."
               rows={1}
               className={cn(
-                "w-full bg-white border border-zinc-200 rounded-xl px-4 py-4 pr-14 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all shadow-lg resize-none min-h-[56px] max-h-48 overflow-y-auto"
+                "w-full bg-white border border-zinc-200 rounded-xl px-4 py-4 pr-14 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all shadow-lg resize-none min-h-[56px] max-h-48 overflow-y-auto",
+                !user && messages.filter(m => m.role === 'user').length >= 3 && "opacity-50 cursor-not-allowed bg-zinc-50"
               )}
+              disabled={!user && messages.filter(m => m.role === 'user').length >= 3}
               style={{ height: 'auto' }}
             />
-            <button
-              onClick={handleSend}
-              disabled={!input.trim() || isLoading}
-              className={cn(
-                "absolute right-3 bottom-3 p-2 rounded-lg transition-all",
-                input.trim() && !isLoading ? "bg-brand-primary text-white hover:bg-brand-primary/90" : "bg-zinc-100 text-zinc-400 cursor-not-allowed"
-              )}
-            >
-              <Send size={18} />
-            </button>
+            {!user && messages.filter(m => m.role === 'user').length >= 3 ? (
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                className="absolute right-3 bottom-3 p-2 px-4 rounded-lg bg-brand-primary text-white hover:bg-brand-primary/90 transition-all flex items-center gap-2 text-sm font-semibold shadow-md"
+              >
+                <LogIn size={16} />
+                Continuar
+              </button>
+            ) : (
+              <button
+                onClick={handleSend}
+                disabled={!input.trim() || isLoading}
+                className={cn(
+                  "absolute right-3 bottom-3 p-2 rounded-lg transition-all",
+                  input.trim() && !isLoading ? "bg-brand-primary text-white hover:bg-brand-primary/90" : "bg-zinc-100 text-zinc-400 cursor-not-allowed"
+                )}
+              >
+                <Send size={18} />
+              </button>
+            )}
           </div>
           <p className="text-[10px] text-zinc-400 text-center mt-3">
             BizMind-AI puede cometer errores. Verifica la información importante.
           </p>
         </div>
       </div>
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+      />
     </div>
   );
 };
