@@ -45,25 +45,18 @@ app.post("/api/chat", async (req, res) => {
   }
 
   try {
-    // We convert the message format to what Google GenAI expects
-    // BizMind uses a stateless approach here for simplicity, 
-    // but we send the history to the API.
-    
-    // Last message is the user prompt
-    const userMessage = messages[messages.length - 1].content;
-    const history = messages.slice(0, -1).map((m: any) => ({
+    // Convert message history to the format expected by the Google GenAI SDK
+    const contents = messages.map((m: any) => ({
       role: m.role === 'user' ? 'user' : 'model',
       parts: [{ text: m.content }]
     }));
 
-    // Prepare contents list for the API
-    const contents = [
-      ...history.map((h: any) => ({
-        role: h.role,
-        parts: h.parts
-      })),
-      { role: "user", parts: [{ text: userMessage }] }
-    ];
+    console.log(`[API] Calling Gemini with ${contents.length} messages...`);
+
+    if (!process.env.GEMINI_API_KEY) {
+      console.error("[API] GEMINI_API_KEY is not defined in the environment.");
+      return res.status(500).json({ error: "Configuration error: Missing API Key" });
+    }
 
     const result = await ai.models.generateContentStream({
       model: "gemini-3-flash-preview",
@@ -77,8 +70,9 @@ app.post("/api/chat", async (req, res) => {
     res.setHeader('Transfer-Encoding', 'chunked');
 
     for await (const chunk of result) {
-      if (chunk.text) {
-        res.write(chunk.text);
+      const text = chunk.text;
+      if (text) {
+        res.write(text);
       }
     }
 

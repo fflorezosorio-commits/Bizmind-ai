@@ -67,7 +67,10 @@ export const ChatArea = ({ onFirstMessage }: ChatAreaProps) => {
         body: JSON.stringify({ messages: [...messages, userMsg] }),
       });
 
-      if (!response.ok) throw new Error('Error de red');
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Error ${response.status}: Error de red`);
+      }
 
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
@@ -89,9 +92,10 @@ export const ChatArea = ({ onFirstMessage }: ChatAreaProps) => {
           return newMessages;
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Lo siento, ocurrió un error al procesar tu consulta. Por favor intenta de nuevo.' }]);
+      const errorMessage = error.message || 'Lo siento, ocurrió un error al procesar tu consulta.';
+      setMessages(prev => [...prev, { role: 'assistant', content: `${errorMessage} Por favor intenta de nuevo.` }]);
     } finally {
       setIsLoading(false);
     }
