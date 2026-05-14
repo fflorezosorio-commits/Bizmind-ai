@@ -98,9 +98,13 @@ export const ChatArea = ({ onFirstMessage }: ChatAreaProps) => {
         ? error.message 
         : 'Lo siento, ocurrió un error al procesar tu consulta.';
       
+      const fullMessage = (errorMessage.includes('intenta de nuevo') || errorMessage.includes('try again'))
+        ? errorMessage
+        : errorMessage.endsWith('.') ? `${errorMessage} Por favor intenta de nuevo.` : `${errorMessage}. Por favor intenta de nuevo.`;
+
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: errorMessage.endsWith('.') ? `${errorMessage} Por favor intenta de nuevo.` : `${errorMessage}. Por favor intenta de nuevo.` 
+        content: fullMessage
       }]);
     } finally {
       setIsLoading(false);
