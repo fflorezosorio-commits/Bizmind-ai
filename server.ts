@@ -97,6 +97,23 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
+app.post("/api/contact", (req, res) => {
+  const { subject, email, comment } = req.body;
+  
+  if (!subject || !email || !comment) {
+    return res.status(400).json({ error: "Todos los campos son obligatorios" });
+  }
+
+  console.log(`[CONTACT FORM SUBMITTED]
+    Asunto: ${subject}
+    Remitente: ${email}
+    Comentario: ${comment}
+    Destinatario: fflorezosorio@gmail.com
+  `);
+
+  return res.json({ success: true });
+});
+
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
